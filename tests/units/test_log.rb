@@ -78,5 +78,15 @@ class TestLog < Test::Unit::TestCase
       @git.log.object('no-exist.txt').size
     end
   end
-  
+
+  def test_log_with_empty_commit_message
+    Dir.mktmpdir do |dir|
+      git = Git.init(dir)
+      expected_message = ''
+      git.commit(expected_message, { allow_empty: true, allow_empty_message: true })
+      log = git.log
+      assert_equal(1, log.to_a.size)
+      assert_equal(expected_message, log[0].message)
+    end
+  end
 end
